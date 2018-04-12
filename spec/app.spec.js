@@ -49,15 +49,15 @@ describe.only('/api', () => {
                     expect(res.body[0].title).to.equal('Living in the shadow of a great man');
                 });
         });
-        it('GET /topics/:topic_id/articles topics error handling when path is spelt incorrectly', () => {
+        it('GET /topics/:topic_id/articles error handling when ID does not exist', () => {
             return request
                 .get('/api/topics/5acf32deba0/articles')
                 .expect(400)
         });
-        it('GET /topics/:topic_id/articles topics error handling when path is spelt incorrectly', () => {
+        it('GET /topics/:topic_id/articles error handling when ID does not exist', () => {
             return request
-                .get('/api/topics/youridhere/articles')
-                .expect(400)
+                .get('/api/topics/your id here/articles')
+                .expect(404)
         });
         it('POST /topics/:topic_id/articles', () => {
             const newArticle = {
@@ -74,7 +74,7 @@ describe.only('/api', () => {
                     expect(res.body.body).to.equal(newArticle.body)
                 });
         });
-        it('POST /topics/:topic_id/articles error handling', () => {
+        it('POST /topics/:topic_id/articles error handling when ID does not exist', () => {
             return request
                 .get('/api/topics/5ace0a0/articles')
                 .expect(400)
@@ -85,14 +85,12 @@ describe.only('/api', () => {
                 "body": "This is my new article content",
                 "created_by": _.sample(users)._id, 
                 "votes": "ten"
-
             }
             return request
                 .post(`/api/articles/${articles[0]._id}/comments`)
                 .send(newArticle)
                 .expect(400)
         });
-
     });
     describe('/articles', () => {
         it('GET /articles', () => {
@@ -117,15 +115,14 @@ describe.only('/api', () => {
                 .then(res => {
                     expect(res.body[1]).to.be.an('object')
                     expect(res.body[0].belongs_to.title).to.equal(`${articles[1].title}`)
-
                 });
         });
-        it('GET /articles/:article_id/comments error handling when path is spelt incorrectly', () => {
+        it('GET /articles/:article_id/comments error handling when ID does not exist', () => {
             return request
                 .get('/api/articles/5ace0fa96fba0/comments')
                 .expect(400)
         });
-        it('GET /articles/:article_id/comments error handling when path is spelt incorrectly', () => {
+        it('GET /articles/:article_id/comments error handling when ID does not exist', () => {
             return request
                 .get('/api/articles/your id here/comments')
                 .expect(404)
@@ -144,7 +141,7 @@ describe.only('/api', () => {
                     expect(res.body.created_by).to.equal(`${newComment.created_by}`)
                 });
         });
-        it('POST /articles/:article_id/comments error handling when path is spelt incorrectly', () => {
+        it('POST /articles/:article_id/comments error handling when ID does not exist', () => {
             return request
                 .post(`/api/articles/DLMKLM/comments`)
                 .expect(400)
@@ -173,11 +170,11 @@ describe.only('/api', () => {
                 .then(res => {
                     expect(res.body.votes).to.equal(articles[0].votes - 1);
                 });
-        it('PATCH /articles/:article_id/votes error handling when path is spelt incorrectly', () => {
+            })
+        it('PATCH /articles/:article_id/votes error handling when ID does not exist', () => {
             return request
                 .patch(`/api/articles/dlmsl?vote=up`)
                 .expect(400)
-                })
             })
     });
     describe('/comments', () => {
@@ -195,7 +192,7 @@ describe.only('/api', () => {
                     expect(res.body.votes).to.equal(comments[0].votes - 1);
                 });
         });
-        it('PATCH /comments/:comment_id/votes error handling when path is spelt incorrectly', () => {
+        it('PATCH /comments/:comment_id/votes error handling when ID does not exist', () => {
             return request
                 .patch(`/api/comments/dlmsl?vote=up`)
                 .expect(400)
@@ -209,13 +206,13 @@ describe.only('/api', () => {
                     expect(res.body.deletedComment).to.equal(`${comments[0]._id}`)
                 });
         });
-        it('DELETE /comment/:comment_id error handling', () => {
+        it('DELETE /comment/:comment_id error handling when ID does not exist', () => {
             return request
                 .delete(`/api/comments/lnlsdk`)
                 .expect(400)
         });
     });
-    describe('users', () => {
+    describe('/users', () => {
         it('GET /users/:username', () => {
             return request
             .get(`/api/users/${users[0].username}`)
@@ -225,7 +222,7 @@ describe.only('/api', () => {
                 expect(res.body.user.name).to.equal(users[0].name)
             })
         });
-        it('GET /users/:username error handling when path is spelt incorrectly', () => {
+        it('GET /users/:username error handling when ID does not exist', () => {
             return request
                 .get(`/api/users/lnsdln`)
                 .expect(404)

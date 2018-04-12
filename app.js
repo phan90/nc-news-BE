@@ -9,6 +9,11 @@ mongoose.Promise = Promise;
 mongoose.connect(DB_URL).then(() => console.log(`connected to ${DB_URL}`))
 
 app.use(bodyParser.json());
+
+app.get("/api", (req, res) => {
+    res.sendFile(__dirname+ "/index.html");
+});
+
 app.use('/api', apiRouter)
 
 app.use('/*', (req, res, next) => next({ status: 404 }));
