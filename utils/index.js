@@ -11,7 +11,6 @@ function makeReferenceObject(docs, data) {
 function updateArticleData(articleData, topicID, userID) {
     articleData.forEach(article => {
         article.belongs_to = topicID[article.topic.charAt(0).toUpperCase() + article.topic.slice(1)]
-        // article.created_by = userID[Math.floor(Math.random() * userID.length)]._id
         article.created_by = userID[_.random(0, userID.length - 1)]._id
     })
     return articleData

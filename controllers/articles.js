@@ -13,9 +13,6 @@ const getAllArticles = (req, res, next) => {
                 acc[comment.belongs_to] = (acc[comment.belongs_to] || 0) + 1;
                 return acc
             }, {})
-            // const articlesWithCount = articles.map((article, i) => {
-            //     return { comment_count: commentcount[article._id] || 0, ...article}
-            // })
             articles.forEach(article => {
                 article.commment_count = commentcount[article._id]||0;
             })
@@ -35,10 +32,10 @@ const getAllCommentsForArticle = (req, res, next) => {
         .populate({ path: 'created_by', select: { '_id': 0, '__v': 0 } })
         .then(comments => {
             if (comments.length === 0) next({ status: 404 })
-            else res.send(comments)
+            else res.send({comments})
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400 })
+            if (err.name === 'CastError') next({ status: 400, message: `${article_id} does not exist, please try again`})
             else next(err)
         })
 }
@@ -58,8 +55,8 @@ const addNewCommentToArticle = (req, res, next) => {
             res.status(201).send(comment)
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400 })
-            else if (err.name === 'ValidationError') next({ status: 400 })
+            if (err.name === 'CastError' || err.name === 'ValidationError') next({
+                status: 400, message: `Error: either ${article_id} does not exist or invalid comment, please try again`})
             else next(err)
         })
 }
@@ -74,7 +71,7 @@ const updateVotes = (req, res, next) => {
             else res.send(updatedVotes)
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400 })
+            if (err.name === 'CastError') next({ status: 400, message: `${article_id} does not exist, please try again` })
             else next(err)
         })
 }

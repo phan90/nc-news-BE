@@ -13,16 +13,16 @@ const getAllArticlesByTopic = (req, res, next) => {
     Articles.find({ belongs_to: topic_id })
         .then(articles => {
             if (articles.length === 0) next({ status: 404 })
-            res.send(articles)
+            res.send({ articles })
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400 })
+            if (err.name === 'CastError') next({ status: 400, message: `${topic_id} does not exist, please try again` })
             else next(err)
         })
 }
 
 const addNewArticleToTopic = (req, res, next) => {
-    const { title, body , votes} = req.body
+    const { title, body, votes } = req.body
     const { topic_id } = req.params
     let article = { title, body, votes, belongs_to: topic_id };
     Users.findOne()
@@ -34,7 +34,7 @@ const addNewArticleToTopic = (req, res, next) => {
             res.status(201).send(newArticle)
         })
         .catch(err => {
-            if (err.name === 'ValidationError') next({ status: 400 })
+            if (err.name === 'ValidationError') next({ status: 400, message: `Error: either ${topic_id} does not exist or invalid comment, please try again` })
             else next(err)
         })
 }

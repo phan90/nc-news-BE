@@ -3,19 +3,15 @@ const { expect } = require('chai');
 const app = require('../app');
 const request = require('supertest')(app);
 const mongoose = require('mongoose');
-// const { DB_URL } = require('../config')
-const { topicData, articleData, userData } = require('../seed/testData')
+const { dataPath } = require('../config')
+const { topicData, articleData, userData } = require(dataPath)
 const _ = require('lodash');
-
 const seedDB = require('../seed/seed')
 
 describe.only('/api', () => {
     let topics, articles, users, comments;
-    // before(() => {
-    //     return mongoose.connect(DB_URL)
-    // })
     beforeEach(() => {
-        // this.timeout = 3000
+        this.timeout = 3000
         return seedDB(topicData, articleData, userData)
             .then(docs => {
                 [topics, users, articles, comments] = docs
@@ -45,8 +41,8 @@ describe.only('/api', () => {
                 .get(`/api/topics/${topics[0]._id}/articles`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body.length).to.equal(2);
-                    expect(res.body[0].title).to.equal('Living in the shadow of a great man');
+                    expect(res.body.articles.length).to.equal(2);
+                    expect(res.body.articles[0].title).to.equal('Living in the shadow of a great man');
                 });
         });
         it('GET /topics/:topic_id/articles error handling when ID does not exist', () => {
@@ -113,8 +109,8 @@ describe.only('/api', () => {
                 .get(`/api/articles/${articles[1]._id}/comments`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body[1]).to.be.an('object')
-                    expect(res.body[0].belongs_to.title).to.equal(`${articles[1].title}`)
+                    expect(res.body).to.be.an('object')
+                    expect(res.body.comments[0].belongs_to.title).to.equal(`${articles[1].title}`)
                 });
         });
         it('GET /articles/:article_id/comments error handling when ID does not exist', () => {
@@ -197,13 +193,17 @@ describe.only('/api', () => {
                 .patch(`/api/comments/dlmsl?vote=up`)
                 .expect(400)
         })
+        it('PATCH /comments/:comment_id/votes error handling when ID is similar to mongo ID does not exist', () => {
+            return request
+                .patch(`/api/comments/8acfcb5ffd92ce06e02099a9?vote=up`)
+                .expect(404)
+        })
         it('DELETE /comment/:comment_id', () => {
             return request
                 .delete(`/api/comments/${comments[0]._id}`)
                 .expect(200)
                 .then(res => {
-                    expect(res.body.comments.length).to.equal(comments.length - 1)
-                    expect(res.body.deletedComment).to.equal(`${comments[0]._id}`)
+                    expect(res.body.message).to.equal(`comment ${comments[0]._id} successfully deleted`)
                 });
         });
         it('DELETE /comment/:comment_id error handling when ID does not exist', () => {
@@ -225,7 +225,7 @@ describe.only('/api', () => {
         it('GET /users/:username error handling when ID does not exist', () => {
             return request
                 .get(`/api/users/lnsdln`)
-                .expect(404)
+                .expect(400)
         });
     })
 });
