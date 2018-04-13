@@ -1,6 +1,0 @@
-git init
-heroku login
-heroku create 'name of file'
-heroku open 
-git add .
-git push heroku master
