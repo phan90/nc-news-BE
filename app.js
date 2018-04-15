@@ -1,16 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const { DB_URL } = process.env || require('./config');
+const  DB_URL  = process.env.DB_URL|| require('./config').DB_URL;
 const app = express();
 const apiRouter = require('./routes/api')
-mongoose.Promise = Promise;
 
 mongoose.connect(DB_URL).then(() => console.log(`connected to ${DB_URL}`))
 
 app.use(bodyParser.json());
 
-app.get("/api", (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(__dirname+ "/index.html");
 });
 
@@ -24,9 +23,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    // console.log(err)
     if (err.status === 400) res.status(400).send(err)
-    // ({ message: 'Bad request' });
     else next(err);
 });
 

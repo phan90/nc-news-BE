@@ -13,7 +13,7 @@ const getAllArticlesByTopic = (req, res, next) => {
     Articles.find({ belongs_to: topic_id })
         .then(articles => {
             if (articles.length === 0) next({ status: 404 })
-            res.send({ articles })
+            else res.send({ articles })
         })
         .catch(err => {
             if (err.name === 'CastError') next({ status: 400, message: `${topic_id} does not exist, please try again` })

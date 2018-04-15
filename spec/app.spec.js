@@ -11,7 +11,7 @@ const seedDB = require('../seed/seed')
 describe.only('/api', () => {
     let topics, articles, users, comments;
     beforeEach(() => {
-        this.timeout = 3000
+        this.timeout = 10000
         return seedDB(topicData, articleData, userData)
             .then(docs => {
                 [topics, users, articles, comments] = docs
@@ -53,6 +53,11 @@ describe.only('/api', () => {
         it('GET /topics/:topic_id/articles error handling when ID does not exist', () => {
             return request
                 .get('/api/topics/your id here/articles')
+                .expect(404)
+        });
+        it('GET /topics/:topic_id/articles error handling when ID does not exist', () => {
+            return request
+                .get(`/api/topics/${topics[0]._id}//articles`)
                 .expect(404)
         });
         it('POST /topics/:topic_id/articles', () => {
@@ -126,7 +131,7 @@ describe.only('/api', () => {
         it('POST /articles/:article_id/comments', () => {
             const newComment = {
                 "comment": "This is my new comment",
-                "created_by": _.sample(users)._id
+                "created_by": users[0]._id
             }
             return request
                 .post(`/api/articles/${articles[0]._id}/comments`)
@@ -211,6 +216,11 @@ describe.only('/api', () => {
                 .delete(`/api/comments/lnlsdk`)
                 .expect(400)
         });
+        it('DELETE /comment/:comment_id error handling when ID does not exist but is a mongoID', () => {
+            return request
+                .delete(`/api/comments/${articles[0]._id}`)
+                .expect(404)
+        });
     });
     describe('/users', () => {
         it('GET /users/:username', () => {
@@ -225,7 +235,7 @@ describe.only('/api', () => {
         it('GET /users/:username error handling when ID does not exist', () => {
             return request
                 .get(`/api/users/lnsdln`)
-                .expect(400)
+                .expect(404)
         });
     })
 });
