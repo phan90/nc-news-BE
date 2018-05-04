@@ -26,6 +26,7 @@ function seedDB(topics, articles, users) {
             const comments = createComments(articles, users)
             return Promise.all([topics, users, articles, Comments.insertMany(comments)])
         })
+        .catch(err => err)
 }
 
 module.exports = seedDB;

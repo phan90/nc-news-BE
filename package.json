@@ -7,13 +7,14 @@
     "test": "mocha spec/*",
     "start": "node listen.js",
     "dev": "nodemon listen.js",
-    "seed:dev": "node seed/dev.seed.js", 
+    "seed:dev": "node seed/dev.seed.js",
     "seed:prod": "NODE_ENV=production node seed/dev.seed.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
     "faker": "^4.1.0",
     "lodash": "^4.17.5",
