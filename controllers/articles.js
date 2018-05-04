@@ -41,16 +41,16 @@ const getAllCommentsForArticle = (req, res, next) => {
 }
 
 const addNewCommentToArticle = (req, res, next) => {
-    const { comment, votes } = req.body
+    const { comment, votes , created_by} = req.body
     const { article_id } = req.params
-    let newComment = { votes }
+    let newComment = { votes, created_by }
     newComment.body = comment
     newComment.belongs_to = article_id
-    Users.findOne()
-        .then(users => {
-            newComment.created_by = users._id
+    // Users.findOne()
+    //     .then(users => {
+    //         newComment.created_by = users._id
             return new Comments(newComment).save()
-        })
+        // })
         .then(comment => {
             res.status(201).send(comment)
         })
