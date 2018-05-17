@@ -4,7 +4,7 @@ This project is a back end API built to view the Northcoders news database which
 This API was created with Node.js, Express.js and MongoDB serving the database.
 
 The link below displays all of the available **API Endpoints**
-https://ncnewss.herokuapp.com/api
+https://ncnewss.herokuapp.com/
 
 ## **Getting Started**
 To begin fork and clone this repository.
