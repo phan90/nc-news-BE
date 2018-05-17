@@ -3,7 +3,7 @@ const { Articles, Comments, Users } = require('../models')
 const getAllArticles = (req, res, next) => {
     Articles.find()
         .populate({ path: 'belongs_to', select: 'title -_id' })
-        .populate({ path: 'created_by', select: { '_id': 0, '__v':0 }})
+        .populate({ path: 'created_by', select: { '_id': 0, '__v': 0 } })
         .lean()
         .then(articles => {
             return Promise.all([articles, Comments.find().lean()])
@@ -14,9 +14,9 @@ const getAllArticles = (req, res, next) => {
                 return acc
             }, {})
             articles.forEach(article => {
-                article.commment_count = commentcount[article._id]||0;
+                article.commment_count = commentcount[article._id] || 0;
             })
-            res.send({ articles: articles})
+            res.send({ articles: articles })
         })
         .catch(next)
 }
@@ -32,16 +32,16 @@ const getAllCommentsForArticle = (req, res, next) => {
         .populate({ path: 'created_by', select: { '_id': 0, '__v': 0 } })
         .then(comments => {
             if (comments.length === 0) next({ status: 404 })
-            else res.send({comments})
+            else res.send({ comments })
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400, message: `${article_id} does not exist, please try again`})
+            if (err.name === 'CastError') next({ status: 400 })
             else next(err)
         })
 }
 
 const addNewCommentToArticle = (req, res, next) => {
-    const { comment, votes , created_by} = req.body
+    const { comment, votes, created_by } = req.body
     const { article_id } = req.params
     let newComment = { votes, created_by }
     newComment.body = comment
@@ -49,14 +49,14 @@ const addNewCommentToArticle = (req, res, next) => {
     // Users.findOne()
     //     .then(users => {
     //         newComment.created_by = users._id
-            return new Comments(newComment).save()
+    return new Comments(newComment).save()
         // })
         .then(comment => {
             res.status(201).send(comment)
         })
         .catch(err => {
-            if (err.name === 'CastError' || err.name === 'ValidationError') next({
-                status: 400, message: `Error: either ${article_id} does not exist or invalid comment, please try again`})
+            if (err.name === 'CastError') next({ status: 400 })
+            else if (err.name === 'ValidationError') next({ status: 400 })
             else next(err)
         })
 }
@@ -71,7 +71,7 @@ const updateVotes = (req, res, next) => {
             else res.send(updatedVotes)
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400, message: `${article_id} does not exist, please try again` })
+            if (err.name === 'CastError') next({ status: 400 })
             else next(err)
         })
 }

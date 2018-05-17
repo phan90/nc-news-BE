@@ -13,6 +13,7 @@ To begin fork and clone this repository.
 You will need the following:
  * **[Node.js](https://nodejs.org/en/)** v9.11.1
  * **[MongoDB](https://www.mongodb.com/)** v3.6.1
+ * **[Express](https://expressjs.com/)**
 
 ### **Node**
 
@@ -70,6 +71,15 @@ mongod
 ```
 ---
 
+Note: You will need to create a config folder for test and development with an index file which will recieve the correct DB_URL and dataPath depending on the node environment. This code can be used in the index file:
+
+```
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+module.exports = require(`./${process.env.NODE_ENV}`)
+```
+
+---
+
 ## **Installing**
 Install dependencies:
 ```
@@ -99,53 +109,6 @@ A full test suite is included in the spec folder which has been written using Ch
 To run the test:
 ```
 npm t
-```
-
-## **Built With**
-* **[Node](https://nodejs.org/en/)** - development environment
-* **[MongoDB](https://www.mongodb.com/)** - database storage
-* **[Express](https://expressjs.com/)** - web application framework
-
-## **Deployment**
-You will need to seed the development data to **[mLab](https://mlab.com)** and host the API on **[Heroku](http://heroku.com)**. You may want to look at this [tutorial](https://www.sitepoint.com/deploy-rest-api-in-30-mins-mlab-heroku/)
-
-#### **mLab**
-1.  Create an account on **[mLab](https://mlab.com)**.
-2.  Create new database.
-3.  Create user for the database.
-4.  Grab URL for config and add in user/password.
-
-#### **Heroku**
-1.  Create an account on **[Heroku](http://heroku.com)**.
-2. Install Heroku 
-```
-brew install heroku/brew/heroku
-```
-3.  Login into Heroku in your terminal
-```
-heroku login [your email address]
-```
-4.  Create a project
-```
-heroku create [project name]
-```
-5.  Set URL config variables, this will make your DB available on process.env. `Remember to ensure that correct config variables are declared within Heroku`
-```
-heroku config:set DB=`[mlab-url]`
-```
-6. Deploy the app
-```
-git add
-git commit 
-git push heroku master
-```
-7.  Open the app
-```
-heroku open
-```
-8. If you encounter any errors, you can view them:
-```
-heroku logs --tail 
 ```
 
 ## Authors

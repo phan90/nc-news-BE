@@ -16,7 +16,7 @@ const getAllArticlesByTopic = (req, res, next) => {
             else res.send({ articles })
         })
         .catch(err => {
-            if (err.name === 'CastError') next({ status: 400, message: `${topic_id} does not exist, please try again` })
+            if (err.name === 'CastError') next({ status: 400 })
             else next(err)
         })
 }
@@ -34,7 +34,8 @@ const addNewArticleToTopic = (req, res, next) => {
             res.status(201).send(newArticle)
         })
         .catch(err => {
-            if (err.name === 'ValidationError') next({ status: 400, message: `Error: either ${topic_id} does not exist or invalid comment, please try again` })
+            if (err.name === 'CastError') next({ status: 400 })
+            else if (err.name === 'ValidationError') next({ status: 400 })
             else next(err)
         })
 }
